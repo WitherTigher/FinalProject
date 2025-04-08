@@ -17,9 +17,34 @@ $firstDayArray = getdate($start);
 <head>
 <title><?php echo "Calendar: ".$firstDayArray['month']." ".$firstDayArray['year']; ?></title>
 <style type="text/css">
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header Styling */
+h1 {
+    background-color: #14495d;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Container Styling */
+    form {
+    margin: 10px auto;
+    max-width: 600px;
+}
     table {
         border: 1px solid black;
         border-collapse: collapse;
+        width: 100%;
+        max-width: 600px;
+        margin: 1rem auto;
     }
     th {
         border: 1px solid black;
@@ -33,14 +58,18 @@ $firstDayArray = getdate($start);
         vertical-align: top;
         width: 100px;
     }
+    div{
+      text-align:center;
+    }
 </style>
 </head>
 <body>
-<div>
-      <a href="about.php" title="About the team">About the Team</a>
-      <a href="proposal.php" title="Proposal for the final">Proposal for the final</a>
-    </div>
   <h1>Select a Month/Year Combination</h1>
+  <div>
+      <a href="about.html" title="About the team">About the Team</a>
+      <a href="proposal.php" title="Proposal for the final">Proposal for the final</a>
+      <a href="showcalendar_withevent.php" title="Calendar">Calendar</a>
+    </div>
   <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <select name="month">
     <?php

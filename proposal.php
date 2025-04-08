@@ -4,29 +4,52 @@
     <meta charset="UTF-8">
     <title>Team Project Proposal – CPSC 3750</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-            color: #333;
-        }
-        h1, h2 {
-            color: #004080;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        code {
-            background-color: #eee;
-            padding: 2px 4px;
-            font-family: Consolas, monospace;
-        }
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header Styling */
+h1 {
+    background-color: #14495d;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Container Styling */
+    #datePicker, #myCal {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+/* Table Styling */
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+th {
+    border: 1px solid black;
+    padding: 6px;
+    font-weight: bold;
+    background: #ccc;
+}
+
+td {
+    border: 1px solid black;
+    padding: 6px;
+    vertical-align: top;
+    width: 100px;
+}
     </style>
 </head>
 <body>
@@ -34,8 +57,9 @@
     <h1>Team Project Proposal</h1>
     <h2>CPSC 3750 – Web App Development</h2>
     <div>
-      <a href="about.php" title="About the team">About the Team</a>
+      <a href="about.html" title="About the team">About the Team</a>
       <a href="proposal.php" title="Proposal for the final">Proposal for the final</a>
+      <a href="showcalendar_withevent.php" title="Calendar">Calendar</a>
     </div>
     <div class="section">
         <h3>Team Members</h3>
