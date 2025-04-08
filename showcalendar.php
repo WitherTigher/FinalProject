@@ -16,24 +16,7 @@ $firstDayArray = getdate($start);
 <html>
 <head>
   <title><?php echo "Calendar: ".$firstDayArray['month']." ".$firstDayArray['year']; ?></title>
-  <style type="text/css">
-    table {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-    th {
-        border: 1px solid black;
-        padding: 6px;
-        font-weight: bold;
-        background: #ccc;
-    }
-    td {
-        border: 1px solid black;
-        padding: 6px;
-        vertical-align: top;
-        width: 100px;
-    }
-  </style>
+  <link rel="stylesheet" href="showcalendar.css" type="text/css">
 </head>
 <body>
   <h1>Select a Month/Year Combination</h1>
