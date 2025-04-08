@@ -1,0 +1,42 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styling */
+header {
+    background-color: #14495d;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Main Content Styling */
+main {
+    padding: 20px;
+}
+
+/* Section and Headings */
+section {
+    margin-bottom: 20px;
+}
+
+section h2 {
+    color: #14495d;
+    margin-bottom: 10px;
+}
+
+/* List Styling */
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 10px;    
+}
