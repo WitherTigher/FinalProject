@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 define("ADAY", (60*60*24));
 if ((!isset($_POST['month'])) || (!isset($_POST['year']))) {
 	$nowArray = getdate();
@@ -61,6 +63,40 @@ h1 {
     div{
       text-align:center;
     }
+    
+    .sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: white;
+  overflow: auto;
+  transition: 0.5s;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin
+}
+
 </style>
 </head>
 <body>
@@ -132,7 +168,7 @@ h1 {
 			  $event_title = "";
 		 }
 
-		 echo "<td><a href=\"javascript:eventWindow('event.php?m=".$month.
+		 echo "<td><a href=\"javascript:sidebarOpen('event.php?m=".$month.
 		 "&amp;d=".$dayArray['mday']."&amp;y=$year');\">".$dayArray['mday']."</a>
 		 <br>".$event_title."</td>\n";
 
@@ -146,12 +182,46 @@ h1 {
     //close connection to MySQL
     mysqli_close($mysqli);
     ?>
-
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="sidebarC()">&times;</a>
+      <div id="side"></div>
+    </div>
   <script type="text/javascript">
-  function eventWindow(url) {
-      event_popupWin = window.open(url, 'event', 'resizable=yes, scrollbars=yes, toolbar=no,width=400,height=400');
-     event_popupWin.opener = self;
+  function sidebar(){
+    document.getElementById("mySidenav").style.width ="400px";
   }
+  function sidebarC(){
+    document.getElementById("mySidenav").style.width ="0px";
+  }
+  function sidebarOpen(url){
+    sidebar();
+    fetch(url)
+    .then(response => response.text())
+    .then(data => {
+      const keeper =document.getElementById("side");
+      keeper.innerHTML = data;
+      const form = keeper.querySelector("form");
+      if (form){
+        form.addEventListener("submit", function(keep) {
+          keep.preventDefault();
+          const submitdata = new FormData(form);
+          fetch(form.action, {
+        method: form.method,
+        body: submitdata
+    })
+    .then(response => response.text())
+    .then(data => {
+      keeper.innerHTML =data;
+    });
+        });
+      }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+  }
+  
   </script>
 
 </body>

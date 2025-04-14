@@ -5,10 +5,12 @@
 <body>
   <h1>Show/Add Events</h1>
   <?php
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
   $mysqli = mysqli_connect("localhost", "root", "", "cal");
 
   //add any new event
-  if ($_POST) {
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	//create database-safe strings
 	$safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
 	$safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
@@ -18,7 +20,7 @@
 	$safe_event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
 	$safe_event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
 
-	$event_date = $safe_y."-".$safe_m."-".$safe_d." ".$safe_event_time_hh.":".$safe_event_time_mm.":00";
+	$event_date = sprintf("%04d-%02d-%02d %02d:%02d:00",$safe_y,$safe_m,$safe_d,$safe_event_time_hh,$safe_event_time_mm);
 
 	$insEvent_sql = "INSERT INTO calendar_events (event_title, event_shortdesc, event_start) VALUES('".$safe_event_title."', '".$safe_event_shortdesc."', '".$event_date."')";
 	$insEvent_res = mysqli_query($mysqli, $insEvent_sql) or die(mysqli_error($mysqli));
@@ -60,7 +62,7 @@
 
   // show form for adding an event
   echo <<<END_OF_TEXT
-<form method="post" action="$_SERVER[PHP_SELF]">
+<form method="post" action="event.php">
 <p><strong>Would you like to add an event?</strong><br>
 Complete the form below and press the submit button to add the event and refresh this window.</p>
 
