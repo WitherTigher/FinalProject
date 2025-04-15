@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 define("ADAY", (60*60*24));
 if ((!isset($_POST['month'])) || (!isset($_POST['year']))) {
 	$nowArray = getdate();
@@ -74,6 +72,8 @@ h1 {
   background-color: white;
   overflow: auto;
   transition: 0.5s;
+  border: 2.5px solid black;
+  
 }
 
 .sidenav a {
@@ -94,7 +94,7 @@ h1 {
   top: 0;
   right: 25px;
   font-size: 36px;
-  margin
+  margin: 0;
 }
 
 </style>
@@ -200,6 +200,7 @@ h1 {
     .then(data => {
       const keeper =document.getElementById("side");
       keeper.innerHTML = data;
+      setTimeout(() =>{
       const form = keeper.querySelector("form");
       if (form){
         form.addEventListener("submit", function(keep) {
@@ -210,11 +211,12 @@ h1 {
         body: submitdata
     })
     .then(response => response.text())
-    .then(data => {
-      keeper.innerHTML =data;
+    .then(data => { keeper.innerHTML =data; 
+      sidebarOpen(url);
     });
         });
       }
+    },50);
     })
     .catch(error => {
         console.error('Error:', error);

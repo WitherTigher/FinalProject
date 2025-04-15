@@ -5,8 +5,7 @@
 <body>
   <h1>Show/Add Events</h1>
   <?php
-  error_reporting(E_ALL);
-  ini_set('display_errors', 1);
+
   $mysqli = mysqli_connect("localhost", "root", "", "cal");
 
   //add any new event
