@@ -1,0 +1,41 @@
+/* Calendar Table Styles */
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 6px;
+    text-align: center;
+}
+
+th {
+    font-weight: bold;
+    background: #ccc;
+}
+
+/* Optional additional styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: #14495d;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin: 0 0 20px 0;
+}
+
+form, table {
+    max-width: 600px;
+    margin: 0 auto;
+}
+  

@@ -1,0 +1,62 @@
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>Calendar Menu</h2>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <ul class="sidebar-menu">
+        <li>
+            <a href="about.html">
+                <i class="fas fa-users"></i>
+                About the Team
+            </a>
+        </li>
+        <li>
+            <a href="proposal.php">
+                <i class="fas fa-file-alt"></i>
+                Proposal for the final
+            </a>
+        </li>
+        <li>
+            <a href="showcalendar_withevent.php">
+                <i class="fas fa-calendar-alt"></i>
+                Calendar
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    let isSidebarHidden = false;
+
+    // Check if sidebar state is stored in localStorage
+    const storedState = localStorage.getItem('sidebarHidden');
+    if (storedState === 'true') {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('expanded');
+        isSidebarHidden = true;
+        updateToggleIcon();
+    }
+
+    sidebarToggle.addEventListener('click', function() {
+        isSidebarHidden = !isSidebarHidden;
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('expanded');
+        
+        // Store the state in localStorage
+        localStorage.setItem('sidebarHidden', isSidebarHidden);
+        
+        updateToggleIcon();
+    });
+
+    function updateToggleIcon() {
+        const icon = sidebarToggle.querySelector('i');
+        icon.className = isSidebarHidden ? 'fas fa-bars' : 'fas fa-times';
+    }
+});
+</script> 

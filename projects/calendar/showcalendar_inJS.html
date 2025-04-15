@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Calendar</title>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="calendar_functions.js"></script>
+  <link rel="stylesheet" href="showcalendar_inJS.css">
+</head>
+<body>
+  <h1>Select a Month/Year Combination</h1>
+  <form id="datePicker"></form>
+  <div id="myCal"></div>
+
+  <script type="text/javascript">
+  $().ready(function(){
+    // build the picker form
+    buildDateForm();
+    calendar();
+
+    $("#submit").click(function() {
+      var newMonth = $('#month').val();
+      var newYear = $('#year').val();
+      var newDate = new Date(newYear, newMonth, 1);
+      calendar(newDate);
+      return false;
+    });
+  });
+  </script>
+</body>
+</html>
