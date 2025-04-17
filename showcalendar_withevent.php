@@ -15,64 +15,40 @@ $firstDayArray = getdate($start);
 <!DOCTYPE html>
 <html>
 <head>
+<div id="navbar"></div>
+    <script>document.addEventListener('DOMContentLoaded', () => {
+     fetch('navbar.html')
+         .then(response => response.text())
+         .then(data => {
+             document.getElementById('navbar').innerHTML = data;
+             
+         });
+ });</script>
 <title><?php echo "Calendar: ".$firstDayArray['month']." ".$firstDayArray['year']; ?></title>
+<link rel="stylesheet" href="sidebar.css" type="text/css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">    
+    <link rel="icon" href="img/jasnlogo.png" alt="logo" />
+    <link rel="stylesheet" href="showcalendar.css" type="text/css">
+    <link rel="stylesheet" href="sidebar.css" type="text/css">
+
 <style type="text/css">
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-/* Header Styling */
-h1 {
-    background-color: #14495d;
-    color: #ffffff;
-    padding: 20px;
-    text-align: center;
-    margin: 0;
-}
-
-/* Container Styling */
-    form {
-    margin: 10px auto;
-    max-width: 600px;
-}
-    table {
-        border: 1px solid black;
-        border-collapse: collapse;
-        width: 100%;
-        max-width: 600px;
-        margin: 1rem auto;
-    }
-    th {
-        border: 1px solid black;
-        padding: 6px;
-        font-weight: bold;
-        background: #ccc;
-    }
-    td {
-        border: 1px solid black;
-        padding: 6px;
-        vertical-align: top;
-        width: 100px;
-    }
-    div{
-      text-align:center;
-    }
     
     .sidenav {
-  height: 100%;
+  height: 100vh;
   width: 0;
   position: fixed;
-  z-index: 1;
-  top: 0;
+  z-index: 100;
+  top: 80;
   right: 0;
   background-color: white;
   overflow: auto;
-  transition: 0.5s;
+  transition:width 0.5s ease;
   border: 2.5px solid black;
+  padding:auto;
+  overflow-x:hidden;
   
 }
 
@@ -91,21 +67,86 @@ h1 {
 
 .sidenav .closebtn {
   position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
+  top: 0px;
+  right: 15px;
+  font-size: 30px;
   margin: 0;
+  color:white;
 }
+
+.sidebar-toggle {
+    position: fixed;
+    top: 65px; /* Position below the main navbar */
+    left: 250px;
+    background: none;
+    border: none;
+    color: #2c3e50;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 101;
+    transition: transform 0.3s ease-in-out;
+    padding: 10px;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-toggle:hover {
+    transform: scale(1.1);
+}
+
+
 
 </style>
 </head>
 <body>
-  <h1>Select a Month/Year Combination</h1>
-  <div>
-      <a href="about.html" title="About the team">About the Team</a>
-      <a href="proposal.php" title="Proposal for the final">Proposal for the final</a>
-      <a href="showcalendar_withevent.php" title="Calendar">Calendar</a>
+<div id="sidebar-container"></div>
+    <script>
+    fetch('sidebar.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('sidebar-container').innerHTML = data;
+        const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    let isSidebarHidden = false;
+
+    // Check if sidebar state is stored in localStorage
+    const storedState = localStorage.getItem('sidebarHidden');
+    if (storedState === 'true') {
+        sidebar.classList.add('hidden');
+        mainContent.classList.add('expanded');
+        isSidebarHidden = true;
+        updateToggleIcon();
+    }
+
+    sidebarToggle.addEventListener('click', function() {
+        isSidebarHidden = !isSidebarHidden;
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('expanded');
+        
+        // Store the state in localStorage
+        localStorage.setItem('sidebarHidden', isSidebarHidden);
+        
+        updateToggleIcon();
+    });
+
+    function updateToggleIcon() {
+        const icon = sidebarToggle.querySelector('i');
+        icon.className = isSidebarHidden ? 'fas fa-bars' : 'fas fa-times';
+    }
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+    <button class="sidebar-toggle" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+</button>
+<div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="sidebarC()">&times;</a>
+      <div id="side"></div>
     </div>
+  <h1>Select a Month/Year Combination</h1>
+  <div class="main-content" id="mainContent">
   <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <select name="month">
     <?php
@@ -182,10 +223,8 @@ h1 {
     //close connection to MySQL
     mysqli_close($mysqli);
     ?>
-    <div id="mySidenav" class="sidenav">
-      <a href="javascript:void(0)" class="closebtn" onclick="sidebarC()">&times;</a>
-      <div id="side"></div>
-    </div>
+
+    
   <script type="text/javascript">
   function sidebar(){
     document.getElementById("mySidenav").style.width ="400px";
@@ -225,6 +264,6 @@ h1 {
   }
   
   </script>
-
+<div>
 </body>
 </html>

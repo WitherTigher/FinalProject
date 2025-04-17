@@ -51,11 +51,20 @@ td {
     width: 100px;
 }
     </style>
+    
 </head>
 <body>
-
+<div id="navbar"></div>
+    <script>document.addEventListener('DOMContentLoaded', () => {
+     fetch('navbar.html')
+         .then(response => response.text())
+         .then(data => {
+             document.getElementById('navbar').innerHTML = data;
+         });
+ });</script>
     <h1>Team Project Proposal</h1>
     <h2>CPSC 3750 – Web App Development</h2>
+    
     <div>
       <a href="about.html" title="About the team">About the Team</a>
       <a href="proposal.php" title="Proposal for the final">Proposal for the final</a>
