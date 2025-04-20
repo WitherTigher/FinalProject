@@ -22,7 +22,7 @@ $password = $data['password'];
 $remember = isset($data['remember']) ? $data['remember'] : false;
 
 // Connect to MySQL
-$mysqli = new mysqli("localhost", "root", "", "calendar");
+$mysqli = new mysqli("localhost", "root", "", "cal");
 if ($mysqli->connect_error) {
     echo json_encode([
         'success' => false,
@@ -33,6 +33,14 @@ if ($mysqli->connect_error) {
 
 // Lookup the user by email
 $stmt = $mysqli->prepare("SELECT id, name, password_hash FROM users WHERE email = ?");
+if (!$stmt) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Database error: ' . $mysqli->error
+    ]);
+    exit;
+}
+
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->store_result();
