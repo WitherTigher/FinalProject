@@ -40,3 +40,71 @@ ul {
 li {
     margin-bottom: 10px;    
 }
+
+/* About Page Specific Styles */
+
+/* Team Member Photos (if added later) */
+.team-member-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 10px auto;
+    display: block;
+    border: 3px solid #3498db;
+}
+
+/* Development Process */
+#development-process p {
+    font-size: 1.1em;
+    line-height: 1.8;
+    color: #444;
+    padding: 15px 0;
+}
+
+/* Responsibilities Section */
+#responsibilities li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#responsibilities li:last-child {
+    border-bottom: none;
+}
+
+#responsibilities strong {
+    display: inline-block;
+    min-width: 150px;
+    color: #2c3e50;
+}
+
+/* Team Members List */
+#team-members ul {
+    list-style: none;
+    padding: 0;
+}
+
+#team-members li {
+    padding: 15px;
+    margin: 10px 0;
+    background: #f8f9fa;
+    border-radius: 4px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#team-members li:hover {
+    transform: translateX(5px);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Additional Responsive Styles */
+@media (max-width: 768px) {
+    #responsibilities strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    #team-members li {
+        margin: 5px 0;
+    }
+}
