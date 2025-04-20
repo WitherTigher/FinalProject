@@ -19,7 +19,6 @@ if (!isset($data['email'], $data['password'])) {
 
 $email = $data['email'];
 $password = $data['password'];
-$remember = isset($data['remember']) ? $data['remember'] : false;
 
 // Connect to MySQL
 $mysqli = new mysqli("localhost", "root", "", "cal");
@@ -73,31 +72,6 @@ if (!password_verify($password, $hash)) {
 // Set session variables
 $_SESSION['userId'] = $userId;
 $_SESSION['userName'] = $name;
-
-// Handle remember me
-if ($remember) {
-    $token = bin2hex(random_bytes(32));
-    $expiry = date('Y-m-d H:i:s', strtotime('+30 days'));
-    
-    $updateStmt = $mysqli->prepare("UPDATE users SET remember_token = ?, token_expiry = ? WHERE id = ?");
-    $updateStmt->bind_param("ssi", $token, $expiry, $userId);
-    $updateStmt->execute();
-    $updateStmt->close();
-    
-    // Set cookie for 30 days
-    setcookie('remember_token', $token, time() + (86400 * 30), "/", "", true, true);
-}
-
-// Update last_login & login_count
-$update = $mysqli->prepare("
-    UPDATE users 
-    SET last_login = NOW(),
-        login_count = login_count + 1
-    WHERE id = ?
-");
-$update->bind_param("i", $userId);
-$update->execute();
-$update->close();
 
 // Return success
 echo json_encode([
