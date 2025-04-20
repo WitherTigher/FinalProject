@@ -93,9 +93,17 @@ $firstDayArray = getdate($start);
     <i class="fas fa-bars"></i>
 </button>
 <div id="mySidenav" class="sidenav">
-      <a href="javascript:void(0)" class="closebtn" onclick="sidebarC()">&times;</a>
-      <div id="side"></div>
+    <a href="javascript:void(0)" class="closebtn" onclick="sidebarC()">&times;</a>
+    <div class="sidenav-content">
+        <div id="side"></div>
     </div>
+    <div class="user-info">
+        <i class="fas fa-user"></i> Hello, <?php echo htmlspecialchars($_SESSION['userName']); ?>
+        <a href="#" onclick="logout()" class="logout-link">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
   <h1>Select a Month/Year Combination</h1>
   <div class="main-content" id="mainContent">
   <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
