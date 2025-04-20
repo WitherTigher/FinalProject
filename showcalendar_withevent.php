@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['userId'])) {
+    header('Location: login.html');
+    exit;
+}
+
 define("ADAY", (60*60*24));
 if ((!isset($_POST['month'])) || (!isset($_POST['year']))) {
 	$nowArray = getdate();
@@ -95,7 +103,29 @@ $firstDayArray = getdate($start);
     transform: scale(1.1);
 }
 
+.user-info {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: white;
+    font-size: 0.9rem;
+}
 
+.logout-link {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin-top: 5px;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.logout-link:hover {
+    opacity: 1;
+}
 
 </style>
 </head>
@@ -265,5 +295,24 @@ $firstDayArray = getdate($start);
   
   </script>
 <div>
+<div class="user-info">
+    <i class="fas fa-user"></i> Hello, <?php echo htmlspecialchars($_SESSION['userName']); ?>
+    <a href="#" onclick="logout()" class="logout-link">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</div>
 </body>
 </html>
+
+<script>
+function logout() {
+    fetch('logout.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = 'login.html';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+</script>
