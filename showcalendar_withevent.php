@@ -23,27 +23,35 @@ $firstDayArray = getdate($start);
 <!DOCTYPE html>
 <html>
 <head>
-<div id="navbar"></div>
-    <script>document.addEventListener('DOMContentLoaded', () => {
-     fetch('navbar.html')
-         .then(response => response.text())
-         .then(data => {
-             document.getElementById('navbar').innerHTML = data;
-             
-         });
- });</script>
-<title><?php echo "Calendar: ".$firstDayArray['month']." ".$firstDayArray['year']; ?></title>
-<link rel="stylesheet" href="sidebar.css" type="text/css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">    
-    <link rel="icon" href="img/jasnlogo.png" alt="logo" />
-    <link rel="stylesheet" href="showcalendar.css" type="text/css">
+    <title><?php echo "Calendar: ".$firstDayArray['month']." ".$firstDayArray['year']; ?></title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="showcalendar_withevent.css" type="text/css">
     <link rel="stylesheet" href="sidebar.css" type="text/css">
+    <link rel="stylesheet" href="navbar.css" type="text/css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="img/jasnlogo.png" alt="logo" />
 </head>
 <body>
-<div id="sidebar-container"></div>
+    <!-- Navbar -->
+    <div id="navbar"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar').innerHTML = data;
+                });
+        });
+    </script>
+
+    <div id="sidebar-container"></div>
     <script>
     fetch('sidebar.html')
         .then(response => response.text())
