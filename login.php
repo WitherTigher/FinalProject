@@ -1,11 +1,14 @@
 <?php
 header('Content-Type: application/json');
 
-// 1. Read JSON input
+// Start session
+session_start();
+
+// Read JSON input
 $input = file_get_contents('php://input');
 $data  = json_decode($input, true);
 
-// 2. Validate incoming fields
+// Validate incoming fields
 if (!isset($data['email'], $data['password'])) {
     echo json_encode([
         'success' => false,
@@ -14,21 +17,22 @@ if (!isset($data['email'], $data['password'])) {
     exit;
 }
 
-$email    = $data['email'];
+$email = $data['email'];
 $password = $data['password'];
+$remember = isset($data['remember']) ? $data['remember'] : false;
 
-// 3. Connect to MySQL
-$mysqli = new mysqli("localhost", "root", "", "country");
+// Connect to MySQL
+$mysqli = new mysqli("localhost", "root", "", "calendar");
 if ($mysqli->connect_error) {
     echo json_encode([
         'success' => false,
-        'message' => 'DB connection failed: ' . $mysqli->connect_error
+        'message' => 'Database connection failed'
     ]);
     exit;
 }
 
-// 4. Lookup the user by email
-$stmt = $mysqli->prepare("SELECT id, password_hash FROM users WHERE email = ?");
+// Lookup the user by email
+$stmt = $mysqli->prepare("SELECT id, name, password_hash FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->store_result();
@@ -36,52 +40,61 @@ $stmt->store_result();
 if ($stmt->num_rows === 0) {
     echo json_encode([
         'success' => false,
-        'message' => 'No account found with that email.'
+        'message' => 'Invalid email or password.'
     ]);
     $stmt->close();
     $mysqli->close();
     exit;
 }
 
-// 5. Bind and fetch
-$stmt->bind_result($userId, $hash);
+// Bind and fetch
+$stmt->bind_result($userId, $name, $hash);
 $stmt->fetch();
 
-// 6. Verify password
+// Verify password
 if (!password_verify($password, $hash)) {
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid credentials.'
+        'message' => 'Invalid email or password.'
     ]);
     $stmt->close();
     $mysqli->close();
     exit;
 }
 
-// ——————————————
-// **INSERT SESSION LOGIC HERE**
-// ——————————————
-session_start();
+// Set session variables
 $_SESSION['userId'] = $userId;
+$_SESSION['userName'] = $name;
 
-// 7. Update last_login & login_count
+// Handle remember me
+if ($remember) {
+    $token = bin2hex(random_bytes(32));
+    $expiry = date('Y-m-d H:i:s', strtotime('+30 days'));
+    
+    $updateStmt = $mysqli->prepare("UPDATE users SET remember_token = ?, token_expiry = ? WHERE id = ?");
+    $updateStmt->bind_param("ssi", $token, $expiry, $userId);
+    $updateStmt->execute();
+    $updateStmt->close();
+    
+    // Set cookie for 30 days
+    setcookie('remember_token', $token, time() + (86400 * 30), "/", "", true, true);
+}
+
+// Update last_login & login_count
 $update = $mysqli->prepare("
-    UPDATE users
-       SET last_login = NOW(),
-           login_count = login_count + 1
-     WHERE id = ?
+    UPDATE users 
+    SET last_login = NOW(),
+        login_count = login_count + 1
+    WHERE id = ?
 ");
 $update->bind_param("i", $userId);
 $update->execute();
 $update->close();
 
-// 8. Generate a token (optional, for fetch‑based flows)
-$token = bin2hex(random_bytes(16));
-
-// 9. Return success
+// Return success
 echo json_encode([
     'success' => true,
-    'token'   => $token
+    'message' => 'Login successful'
 ]);
 
 $stmt->close();
