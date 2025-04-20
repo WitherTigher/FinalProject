@@ -11,7 +11,7 @@ if (empty($email)) {
 }
 
 // Connect to database
-$mysqli = new mysqli("localhost", "root", "", "country");
+$mysqli = new mysqli("localhost", "root", "", "calendar");
 if ($mysqli->connect_error) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed']);
     exit;
