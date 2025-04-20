@@ -63,16 +63,6 @@
 			box-shadow: 0 0 5px rgba(20, 73, 93, 0.3);
 		}
 
-		.remember-me {
-			display: flex;
-			align-items: center;
-			margin-bottom: 1rem;
-		}
-
-		.remember-me input {
-			margin-right: 0.5rem;
-		}
-
 		button[type="submit"] {
 			width: 100%;
 			padding: 12px;
@@ -140,10 +130,6 @@
 				<label for="password">Password</label>
 				<input type="password" id="password" name="password" required>
 			</div>
-			<div class="remember-me">
-				<input type="checkbox" id="remember" name="remember">
-				<label for="remember">Remember me</label>
-			</div>
 			<button type="submit">Login</button>
 			<div id="loginMessage"></div>
 			<div class="links">
@@ -159,7 +145,6 @@
 			
 			const email = document.getElementById('email').value;
 			const password = document.getElementById('password').value;
-			const remember = document.getElementById('remember').checked;
 			const messageDiv = document.getElementById('loginMessage');
 
 			fetch('login.php', {
@@ -169,8 +154,7 @@
 				},
 				body: JSON.stringify({
 					email: email,
-					password: password,
-					remember: remember
+					password: password
 				})
 			})
 			.then(response => response.json())
