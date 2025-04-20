@@ -20,12 +20,12 @@ if (!isset($data['email'], $data['password'])) {
 $email = $data['email'];
 $password = $data['password'];
 
-// Connect to MySQL
-$mysqli = new mysqli("localhost", "root", "", "cal");
-if ($mysqli->connect_error) {
+// Connect to MySQL using the same connection method as showcalendar_withevent.php
+$mysqli = mysqli_connect("localhost", "root", "", "calendar");
+if (!$mysqli) {
     echo json_encode([
         'success' => false,
-        'message' => 'Database connection failed'
+        'message' => 'Database connection failed: ' . mysqli_connect_error()
     ]);
     exit;
 }
