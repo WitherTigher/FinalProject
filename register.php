@@ -46,10 +46,10 @@ try {
     }
 
     // Connect to MySQL
-    $mysqli = new mysqli("localhost", "root", "", "country");
+    $mysqli = mysqli_connect("localhost", "root", "", "calendar");
 
-    if ($mysqli->connect_error) {
-        throw new Exception("Database connection failed: " . $mysqli->connect_error);
+    if (!$mysqli) {
+        throw new Exception("Database connection failed: " . mysqli_connect_error());
     }
 
     // Check if user already exists
@@ -76,10 +76,9 @@ try {
         throw new Exception("Password hashing failed");
     }
 
-    // Insert user with default values for additional columns
-    $sql = "INSERT INTO users (name, email, password_hash, security_question, security_answer, 
-            login_count, failed_logins, is_locked) 
-            VALUES (?, ?, ?, ?, ?, 0, 0, 0)";
+    // Insert user with only the required fields
+    $sql = "INSERT INTO users (name, email, password_hash, security_question, security_answer) 
+            VALUES (?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($sql);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . $mysqli->error);
@@ -106,7 +105,7 @@ try {
     // Return error response
     echo json_encode([
         "success" => false,
-        "message" => "Registration failed: " . $e->getMessage()
+        "message" => $e->getMessage()
     ]);
 }
 ?>
