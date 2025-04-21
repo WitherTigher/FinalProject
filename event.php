@@ -5,8 +5,14 @@
 <body>
   <h1>Show/Add Events</h1>
   <?php
+  session_start();
 
   $mysqli = mysqli_connect("localhost", "root", "", "calendar");
+  if (!isset($_SESSION['userId'])) {
+    header('Location: login.html');
+    exit;
+}
+  $user =$_SESSION['userId'];
 
   //add any new event
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,7 +27,7 @@
 
 	$event_date = sprintf("%04d-%02d-%02d %02d:%02d:00",$safe_y,$safe_m,$safe_d,$safe_event_time_hh,$safe_event_time_mm);
 
-	$insEvent_sql = "INSERT INTO calendar_events (event_title, event_shortdesc, event_start) VALUES('".$safe_event_title."', '".$safe_event_shortdesc."', '".$event_date."')";
+	$insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start) VALUES('".$user."','".$safe_event_title."', '".$safe_event_shortdesc."', '".$event_date."')";
 	$insEvent_res = mysqli_query($mysqli, $insEvent_sql) or die(mysqli_error($mysqli));
 
   } else {
