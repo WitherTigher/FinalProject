@@ -6,7 +6,7 @@ if (!isset($_SESSION['userId'])) {
     header('Location: login.html');
     exit;
 }
-
+$user =$_SESSION['userId'];
 define("ADAY", (60*60*24));
 if ((!isset($_POST['month'])) || (!isset($_POST['year']))) {
 	$nowArray = getdate();
@@ -110,7 +110,7 @@ $firstDayArray = getdate($start);
 </div>
   <h1>Select a Month/Year Combination</h1>
   <div class="main-content" id="mainContent">
-  <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+  <form id="reload" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <select name="month">
     <?php
     $months = Array("January", "February", "March", "April", "May",  "June", "July", "August", "September", "October", "November", "December");
@@ -160,7 +160,7 @@ $firstDayArray = getdate($start);
 		 $chkEvent_sql = "SELECT event_title FROM calendar_events WHERE
 						  month(event_start) = '".$month."' AND
 						  dayofmonth(event_start) = '".$dayArray['mday']."'
-						  AND year(event_start) = '".$year."' ORDER BY event_start";
+						  AND year(event_start) = '".$year."' AND userId = '".$user."'ORDER BY event_start";
 		 $chkEvent_res = mysqli_query($mysqli, $chkEvent_sql)
 						 or die(mysqli_error($mysqli));
 

@@ -38,7 +38,7 @@
   }
 
   //show events for this day
-  $getEvent_sql = "SELECT event_title, event_shortdesc, date_format(event_start, '%l:%i %p') as fmt_date FROM calendar_events WHERE month(event_start) = '".$safe_m."' AND dayofmonth(event_start) = '".$safe_d."' AND year(event_start) = '".$safe_y."' ORDER BY event_start";
+  $getEvent_sql = "SELECT event_title, event_shortdesc, date_format(event_start, '%l:%i %p') as fmt_date FROM calendar_events WHERE month(event_start) = '".$safe_m."' AND dayofmonth(event_start) = '".$safe_d."' AND year(event_start) = '".$safe_y."' AND userId = '".$user."' ORDER BY event_start";
   $getEvent_res = mysqli_query($mysqli, $getEvent_sql) or die(mysqli_error($mysqli));
 
   if (mysqli_num_rows($getEvent_res) > 0) {
