@@ -6,7 +6,7 @@
   <h1>Show/Add Events</h1>
   <?php
 
-  $mysqli = mysqli_connect("localhost", "root", "", "cal");
+  $mysqli = mysqli_connect("localhost", "root", "", "calendar");
 
   //add any new event
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {

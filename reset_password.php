@@ -44,3 +44,4 @@ if ($updateStmt->execute()) {
 $stmt->close();
 $updateStmt->close();
 $mysqli->close(); 
+?>

@@ -39,6 +39,10 @@ $firstDayArray = getdate($start);
     <link rel="icon" href="img/jasnlogo.png" alt="logo" />
 </head>
 <body>
+     <!-- Dark Mode Toggle Button -->
+    <button id="toggleDark" class="dark-toggle">
+    <i class="fas fa-moon"></i> Toggle Dark Mode
+    </button>
     <!-- Navbar -->
     <div id="navbar"></div>
     <script>
@@ -232,8 +236,18 @@ $firstDayArray = getdate($start);
 </div>
 </body>
 </html>
-
 <script>
+     // Dark Mode Toggle Script
+    document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('darkMode') === 'true') {
+          document.body.classList.add('dark-mode');
+        }
+
+        document.getElementById('toggleDark').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+    });
 function logout() {
     fetch('logout.php')
         .then(response => response.json())
