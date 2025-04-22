@@ -24,10 +24,13 @@
 	$safe_event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
 	$safe_event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
 	$safe_event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
+    $safe_event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
+	$safe_event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
 
 	$event_date = sprintf("%04d-%02d-%02d %02d:%02d:00",$safe_y,$safe_m,$safe_d,$safe_event_time_hh,$safe_event_time_mm);
+    $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00",$safe_y,$safe_m,$safe_d,$safe_event_end_hh,$safe_event_end_mm);
 
-	$insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start) VALUES('".$user."','".$safe_event_title."', '".$safe_event_shortdesc."', '".$event_date."')";
+	$insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start, event_end) VALUES('".$user."','".$safe_event_title."', '".$safe_event_shortdesc."', '".$event_date."', '".$event_end."')";
 	$insEvent_res = mysqli_query($mysqli, $insEvent_sql) or die(mysqli_error($mysqli));
 
   } else {
@@ -38,7 +41,7 @@
   }
 
   //show events for this day
-  $getEvent_sql = "SELECT event_title, event_shortdesc, date_format(event_start, '%l:%i %p') as fmt_date FROM calendar_events WHERE month(event_start) = '".$safe_m."' AND dayofmonth(event_start) = '".$safe_d."' AND year(event_start) = '".$safe_y."' AND userId = '".$user."' ORDER BY event_start";
+  $getEvent_sql = "SELECT event_title, event_shortdesc, date_format(event_start, '%l:%i %p') as fmt_date, date_format(event_end, '%l:%i %p') as fmt_end FROM calendar_events WHERE month(event_start) = '".$safe_m."' AND dayofmonth(event_start) = '".$safe_d."' AND year(event_start) = '".$safe_y."' AND userId = '".$user."' ORDER BY event_start";
   $getEvent_res = mysqli_query($mysqli, $getEvent_sql) or die(mysqli_error($mysqli));
 
   if (mysqli_num_rows($getEvent_res) > 0) {
@@ -47,8 +50,9 @@
 		$event_title = stripslashes($ev['event_title']);
 		$event_shortdesc = stripslashes($ev['event_shortdesc']);
 		$fmt_date = $ev['fmt_date'];
+        $fmt_end = $ev['fmt_end'];
 
-		$event_txt .= "<li><strong>".$fmt_date."</strong>: ".$event_title."<br>".$event_shortdesc."</li>";
+		$event_txt .= "<li><strong>".$fmt_date."-".$fmt_end."</strong>: ".$event_title."<br>".$event_shortdesc."</li>";
 	}
 	$event_txt .= "</ul>";
 	mysqli_free_result($getEvent_res);
@@ -78,7 +82,7 @@ Complete the form below and press the submit button to add the event and refresh
 <input type="text" id="event_shortdesc" name="event_shortdesc" size="25" maxlength="255"></p>
 
 <fieldset>
-<legend>Event Time (hh:mm):</legend>
+<legend>Starting Time (hh:mm):</legend>
 <select name="event_time_hh">
 END_OF_TEXT;
 
@@ -89,6 +93,24 @@ END_OF_TEXT;
   echo <<<END_OF_TEXT
 </select> :
 <select name="event_time_mm">
+<option value="00">00</option>
+<option value="15">15</option>
+<option value="30">30</option>
+<option value="45">45</option>
+</select>
+</fieldset>
+<fieldset>
+<legend>Ending Time (hh:mm):</legend>
+<select name="event_end_hh">
+END_OF_TEXT;
+
+  for ($x=1; $x <= 24; $x++) {
+  	echo "<option value=\"$x\">$x</option>";
+  }
+
+  echo <<<END_OF_TEXT
+</select> :
+<select name="event_end_mm">
 <option value="00">00</option>
 <option value="15">15</option>
 <option value="30">30</option>
