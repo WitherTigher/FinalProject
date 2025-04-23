@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Project Practice User – CPSC 3750</title>
+    <link rel="stylesheet" href="navbar.css" type="text/css">
+    <link rel="stylesheet" href="sidebar.css" type="text/css">
+    <link rel="stylesheet" href="exampleAcc.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header Styling */
+h1 {
+    background-color: #14495d;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Container Styling */
+    #datePicker, #myCal {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+/* Table Styling */
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+th {
+    border: 1px solid black;
+    padding: 6px;
+    font-weight: bold;
+    background: #ccc;
+}
+
+td {
+    border: 1px solid black;
+    padding: 6px;
+    vertical-align: top;
+    width: 100px;
+}
+    </style>
+    
+</head>
+<body>
+<div id="navbar"></div>
+    <script>document.addEventListener('DOMContentLoaded', () => {
+     fetch('navbar.html')
+         .then(response => response.text())
+         .then(data => {
+             document.getElementById('navbar').innerHTML = data;
+         });
+ });</script>
+    <h1>Team Project Login User</h1>
+    <h2>CPSC 3750 – Web App Development</h2>
+    
+    <nav class="practice-nav">
+        <a href="about.html" title="About the team"><i class="fas fa-users"></i> About the Team</a>
+        <a href="proposal.php" title="Proposal for the final"><i class="fas fa-file-alt"></i> Proposal</a>
+        <a href="showcalendar_withevent.php" title="Calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
+        <a href="exampleAcc.html" title="Login User" class="active"><i class="fas fa-lock"></i> Login User</a>
+        <a href="features.html" title="Features"><i class="fas fa-cog"></i> Features</a>
+    </nav>
+    <div class="section">
+        <h3>Team Members</h3>
+        <ul>
+            <li>Connor Cromer</li>
+            <li>Jason Lin</li>
+            <li>Jeffrey Moon</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3>Practice user that shows Realistic Pre Loaded Data. How to access.</h3>
+        <p>We have created the User<strong> Dan Wooster
+        </strong> Using the info given in the project summary with the Demo.
+        To access it you need to
+        <br>
+        1:Go back to the Calendar page and scroll down and hit Log out button which will 
+        send you back to the Login page.
+        <br>
+        2:Once there you will enter the email dan@demo.com.
+        <br>
+        3:Then you will enter the password which is wooster123.
+        <br>
+        4:Then hit login and you shall have entered the practice user with all his new 
+        summer classes.</p>
+    </div>
+
+    <div class="section">
+        <h3>Practice User Overview</h3>
+        <p>Our Practice user is made using the given format and info from the assignment page.
+            With the account being made using Professor Woosters email and name. We have created 
+            39 events spread out over the last 9 days of april and the entire span of May. Where
+            through out different times and days he will be using the calendar to keep track of 
+            which class or task he has to do each day throughout the span of 38 days with there being two
+            events on one day towards the start.
+        </p>
+    </div>
+    <div class="section">
+        <h3>Pre Loaded End of the Year Classes/Data Expectations Example</h3>
+        <ul>
+            <li>Title: Wi-Fi Troubleshooting</li>
+            <li>Description:Learning how to troubleshoot slow or intermittent Wi-Fi connections in the classroom. </li>
+            <li>Start Date/Time: 2025-04-22 08:00:00</li>
+            <li>Start Date/Time: 2025-04-22 09:00:00</li>
+        </ul>
+    </div>
+</body>
+</html>

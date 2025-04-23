@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Project Features – CPSC 3750</title>
+    <link rel="stylesheet" href="navbar.css" type="text/css">
+    <link rel="stylesheet" href="sidebar.css" type="text/css">
+    <link rel="stylesheet" href="features.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header Styling */
+h1 {
+    background-color: #14495d;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Container Styling */
+    #datePicker, #myCal {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+/* Table Styling */
+table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+th {
+    border: 1px solid black;
+    padding: 6px;
+    font-weight: bold;
+    background: #ccc;
+}
+
+td {
+    border: 1px solid black;
+    padding: 6px;
+    vertical-align: top;
+    width: 100px;
+}
+    </style>
+    
+</head>
+<body>
+<div id="navbar"></div>
+    <script>document.addEventListener('DOMContentLoaded', () => {
+     fetch('navbar.html')
+         .then(response => response.text())
+         .then(data => {
+             document.getElementById('navbar').innerHTML = data;
+         });
+ });</script>
+    <h1>Team Project Features</h1>
+    <h2>CPSC 3750 – Web App Development</h2>
+    
+    <nav class="feature-nav">
+        <a href="about.html" title="About the team"><i class="fas fa-users"></i> About the Team</a>
+        <a href="proposal.php" title="Proposal for the final"><i class="fas fa-file-alt"></i> Proposal</a>
+        <a href="showcalendar_withevent.php" title="Calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
+        <a href="exampleAcc.html" title="Login User"><i class="fas fa-lock"></i> Login User</a>
+        <a href="features.html" title="Features" class="active"><i class="fas fa-cog"></i> Features</a>
+    </nav>
+    <div class="section">
+        <h3>Team Members</h3>
+        <ul>
+            <li>Connor Cromer</li>
+            <li>Jason Lin</li>
+            <li>Jeffrey Moon</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h3>Front End Changes</h3>
+        <ul>
+            <li>Week 1 (due April 08 2PM): Base app implemented, proposal presented</li>
+            <li>Week 3 (due April 22 2PM): Complete enhancements, demo to instructor</li>
+            <li>Week 4 (due April 27 EOD): Polish UI and prepare for class demo</li>
+            <li>Week 5 (due Final Exam): Give a polished demo of your team's app</li>
+        </ul>
+    </div>
+    <div class="section">
+        <h3>Back End Changes</h3>
+        <ul>
+            <li>Week 1 (due April 08 2PM): Base app implemented, proposal presented</li>
+            <li>Week 3 (due April 22 2PM): Complete enhancements, demo to instructor</li>
+            <li>Week 4 (due April 27 EOD): Polish UI and prepare for class demo</li>
+            <li>Week 5 (due Final Exam): Give a polished demo of your team's app</li>
+        </ul>
+    </div>
+</body>
+</html>

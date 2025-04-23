@@ -73,6 +73,8 @@ td {
         <a href="about.html" title="About the team"><i class="fas fa-users"></i> About the Team</a>
         <a href="proposal.php" title="Proposal for the final" class="active"><i class="fas fa-file-alt"></i> Proposal</a>
         <a href="showcalendar_withevent.php" title="Calendar"><i class="fas fa-calendar-alt"></i> Calendar</a>
+        <a href="exampleAcc.html" title="Login User"><i class="fas fa-lock"></i> Login User</a>
+        <a href="features.html" title="Features"><i class="fas fa-cog"></i> Features</a>
     </nav>
     <div class="section">
         <h3>Team Members</h3>

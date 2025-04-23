@@ -1,0 +1,130 @@
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Styling */
+h1 {
+    background-color: #2c3e50;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    margin: 0;
+    font-weight: 600;
+}
+
+h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin: 20px 0;
+    font-weight: 500;
+}
+
+/* Navigation Menu */
+.feature-nav {
+    background-color: #34495e;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.feature-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.feature-nav a:hover {
+    background-color: #3498db;
+    transform: translateY(-2px);
+}
+
+.feature-nav a.active {
+    background-color: #3498db;
+}
+
+/* Content Sections */
+.section {
+    background-color: white;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 1000px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.section h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Lists */
+.section ul {
+    padding-left: 20px;
+}
+
+.section li {
+    margin-bottom: 10px;
+}
+
+.section strong {
+    color: #2c3e50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .section {
+        margin: 20px;
+    }
+    
+    .feature-nav a {
+        display: block;
+        margin: 10px auto;
+        max-width: 200px;
+    }
+}
+
+/* Table Styling */
+table {
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+th {
+    border: 1px solid #ddd;
+    padding: 12px;
+    font-weight: bold;
+    background: #f8f9fa;
+    color: #2c3e50;
+}
+
+td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    vertical-align: top;
+}
+
+/* Container Styling */
+#datePicker, #myCal {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 0 20px;
+} 
