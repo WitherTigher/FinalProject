@@ -219,11 +219,15 @@ $firstDayArray = getdate($start);
             method: 'POST',
             body: formData
           })
-          .then(response => response.text())
+          .then(response => {
+            console.log('Raw response:', response);
+            return response.text();
+          })
           .then(data => {
-            console.log('Response:', data);
+            console.log('Response text:', data);
             try {
               const jsonData = JSON.parse(data);
+              console.log('Parsed JSON:', jsonData);
               if (jsonData.success) {
                 alert('Event added successfully!');
                 window.location.reload();
@@ -232,11 +236,12 @@ $firstDayArray = getdate($start);
               }
             } catch (e) {
               console.error('Error parsing response:', e);
+              console.log('Raw response data:', data);
               keeper.innerHTML = data;
             }
           })
           .catch(error => {
-            console.error('Error:', error);
+            console.error('Network or processing error:', error);
             alert('Error processing your request. Please try again.');
           });
         });
