@@ -37,6 +37,26 @@ $firstDayArray = getdate($start);
     
     <!-- Favicon -->
     <link rel="icon" href="img/jasnlogo.png" alt="logo" />
+    <style>
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        color: white;
+        display: none;
+        z-index: 1000;
+    }
+
+    .success {
+        background-color: #4CAF50;
+    }
+
+    .error {
+        background-color: #f44336;
+    }
+    </style>
 </head>
 <body>
      <!-- Dark Mode Toggle Button -->
@@ -208,48 +228,33 @@ $firstDayArray = getdate($start);
       forms.forEach(form => {
         form.addEventListener("submit", function(e) {
           e.preventDefault();
-          console.log('Form submitted');
           
           const formData = new FormData(this);
-          formData.append('action', 'add'); // Add the action parameter
-          
-          console.log('Form data:', Object.fromEntries(formData));
+          formData.append('action', 'add');
           
           fetch('event.php', {
             method: 'POST',
             body: formData
           })
-          .then(response => {
-            console.log('Raw response:', response);
-            return response.text();
-          })
+          .then(response => response.json())
           .then(data => {
-            console.log('Response text:', data);
-            try {
-              const jsonData = JSON.parse(data);
-              console.log('Parsed JSON:', jsonData);
-              if (jsonData.success) {
-                alert('Event added successfully!');
-                window.location.reload();
-              } else {
-                alert('Error adding event: ' + (jsonData.error || 'Unknown error'));
-              }
-            } catch (e) {
-              console.error('Error parsing response:', e);
-              console.log('Raw response data:', data);
-              keeper.innerHTML = data;
+            if (data.success) {
+              showNotification('Event added successfully', 'success');
+              window.location.reload();
+            } else {
+              showNotification('Error adding event: ' + (data.error || 'Unknown error'), 'error');
             }
           })
           .catch(error => {
-            console.error('Network or processing error:', error);
-            alert('Error processing your request. Please try again.');
+            console.error('Error:', error);
+            showNotification('Error processing your request. Please try again.', 'error');
           });
         });
       });
     })
     .catch(error => {
       console.error('Error:', error);
-      alert('Error loading content. Please try again.');
+      showNotification('Error loading content. Please try again.', 'error');
     });
   }
   
@@ -261,6 +266,8 @@ $firstDayArray = getdate($start);
         <i class="fas fa-sign-out-alt"></i> Logout
     </a>
 </div>
+</div>
+<div id="notification" class="notification"></div>
 </body>
 </html>
 <script>
@@ -284,5 +291,85 @@ function logout() {
             }
         })
         .catch(error => console.error('Error:', error));
+}
+
+// Add notification functions
+function showNotification(message, type) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = 'notification ' + type;
+    notification.style.display = 'block';
+    
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+// Edit event handler
+function editEvent(button) {
+    const eventItem = button.closest('.event-item');
+    eventItem.querySelector('.event-display').style.display = 'none';
+    eventItem.querySelector('.edit-form').style.display = 'block';
+}
+
+// Delete event handler
+function deleteEvent(eventId) {
+    if (!confirm('Are you sure you want to delete this event?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('action', 'delete');
+    formData.append('event_id', eventId);
+    
+    fetch('event.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Event deleted successfully', 'success');
+            window.location.reload();
+        } else {
+            showNotification('Error deleting event: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error deleting event. Please try again.', 'error');
+    });
+}
+
+// Update event handler
+function updateEvent(eventId, form) {
+    const formData = new FormData(form);
+    formData.append('action', 'update');
+    formData.append('event_id', eventId);
+    
+    fetch('event.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Event updated successfully', 'success');
+            window.location.reload();
+        } else {
+            showNotification('Error updating event: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error updating event. Please try again.', 'error');
+    });
+}
+
+// Cancel edit handler
+function cancelEdit(button) {
+    const eventItem = button.closest('.event-item');
+    eventItem.querySelector('.event-display').style.display = 'block';
+    eventItem.querySelector('.edit-form').style.display = 'none';
 }
 </script>
