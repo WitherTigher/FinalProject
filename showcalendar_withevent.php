@@ -200,30 +200,39 @@ $firstDayArray = getdate($start);
     fetch(url)
     .then(response => response.text())
     .then(data => {
-      const keeper =document.getElementById("side");
+      const keeper = document.getElementById('side');
       keeper.innerHTML = data;
-      setTimeout(() =>{
+      
+      // Add event handlers to any forms in the sidebar
       const form = keeper.querySelector("form");
-      if (form){
-        form.addEventListener("submit", function(keep) {
-          keep.preventDefault();
-          const submitdata = new FormData(form);
-          fetch(form.action, {
-        method: form.method,
-        body: submitdata
-    })
-    .then(response => response.text())
-    .then(data => { keeper.innerHTML =data; 
-      sidebarOpen(url);
-    });
+      if (form) {
+        form.addEventListener("submit", function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          
+          fetch(this.action, {
+            method: this.method || 'POST',
+            body: formData
+          })
+          .then(response => response.text())
+          .then(data => {
+            keeper.innerHTML = data;
+            // If this was a successful event addition, refresh the main calendar
+            if (data.includes('success')) {
+              window.location.reload();
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error processing your request. Please try again.');
+          });
         });
       }
-    },50);
     })
     .catch(error => {
-        console.error('Error:', error);
+      console.error('Error:', error);
+      alert('Error loading content. Please try again.');
     });
-
   }
   
   </script>
