@@ -208,8 +208,18 @@
 
   <script>
     // Add event handler
-    $('#addEventForm').on('submit', function(e) {
+    document.getElementById('addEventForm').addEventListener('submit', function(e) {
       e.preventDefault();
+      
+      // Validate form
+      const title = this.querySelector('[name="event_title"]').value;
+      const desc = this.querySelector('[name="event_shortdesc"]').value;
+      
+      if (!title.trim()) {
+        alert('Please enter an event title');
+        return;
+      }
+      
       const formData = new FormData(this);
       formData.append('action', 'add');
       
@@ -220,33 +230,46 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          location.reload(); // Temporary solution - will be replaced with AJAX update
+          // Clear form
+          this.reset();
+          // Refresh the events list
+          window.location.reload();
         } else {
-          alert('Error adding event: ' + data.error);
+          alert('Error adding event: ' + (data.error || 'Unknown error'));
         }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding event. Please try again.');
       });
     });
 
     // Delete event handler
     function deleteEvent(eventId) {
-      if (confirm('Are you sure you want to delete this event?')) {
-        const formData = new FormData();
-        formData.append('action', 'delete');
-        formData.append('event_id', eventId);
-        
-        fetch('event.php', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            location.reload(); // Temporary solution - will be replaced with AJAX update
-          } else {
-            alert('Error deleting event: ' + data.error);
-          }
-        });
+      if (!confirm('Are you sure you want to delete this event?')) {
+        return;
       }
+      
+      const formData = new FormData();
+      formData.append('action', 'delete');
+      formData.append('event_id', eventId);
+      
+      fetch('event.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.reload();
+        } else {
+          alert('Error deleting event: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error deleting event. Please try again.');
+      });
     }
 
     // Edit event handlers
@@ -274,10 +297,14 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          location.reload(); // Temporary solution - will be replaced with AJAX update
+          window.location.reload();
         } else {
-          alert('Error updating event: ' + data.error);
+          alert('Error updating event: ' + (data.error || 'Unknown error'));
         }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating event. Please try again.');
       });
     }
 
@@ -291,7 +318,8 @@
               alert(`Reminder: ${reminder.event_title} starts ${reminder.reminder_type}`);
             });
           }
-        });
+        })
+        .catch(error => console.error('Error checking reminders:', error));
     }
 
     // Check reminders every minute
