@@ -2,6 +2,24 @@
 <html>
 <head>
   <title>Show/Add Events</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .event-item { 
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      position: relative;
+    }
+    .event-actions {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+    .edit-form {
+      display: none;
+    }
+  </style>
+</head>
 <body>
   <h1>Show/Add Events</h1>
   <?php
@@ -11,119 +29,274 @@
   if (!isset($_SESSION['userId'])) {
     header('Location: login.html');
     exit;
-}
-  $user =$_SESSION['userId'];
+  }
+  $user = $_SESSION['userId'];
 
-  //add any new event
-  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	//create database-safe strings
-	$safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
-	$safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
-	$safe_y = mysqli_real_escape_string($mysqli, $_POST['y']);
-	$safe_event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
-	$safe_event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
-	$safe_event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
-	$safe_event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
-    $safe_event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
-	$safe_event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
-
-	$event_date = sprintf("%04d-%02d-%02d %02d:%02d:00",$safe_y,$safe_m,$safe_d,$safe_event_time_hh,$safe_event_time_mm);
-    $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00",$safe_y,$safe_m,$safe_d,$safe_event_end_hh,$safe_event_end_mm);
-
-	$insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start, event_end) VALUES('".$user."','".$safe_event_title."', '".$safe_event_shortdesc."', '".$event_date."', '".$event_end."')";
-	$insEvent_res = mysqli_query($mysqli, $insEvent_sql) or die(mysqli_error($mysqli));
-
-  } else {
-	//create database-safe strings
-	$safe_m = mysqli_real_escape_string($mysqli, $_GET['m']);
-	$safe_d = mysqli_real_escape_string($mysqli, $_GET['d']);
-	$safe_y = mysqli_real_escape_string($mysqli, $_GET['y']);
+  // Handle AJAX delete request
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    $event_id = mysqli_real_escape_string($mysqli, $_POST['event_id']);
+    $delete_sql = "DELETE FROM calendar_events WHERE id = '$event_id' AND userId = '$user'";
+    $delete_res = mysqli_query($mysqli, $delete_sql);
+    if ($delete_res) {
+      echo json_encode(['success' => true]);
+    } else {
+      echo json_encode(['success' => false, 'error' => mysqli_error($mysqli)]);
+    }
+    exit;
   }
 
-  //show events for this day
-  $getEvent_sql = "SELECT event_title, event_shortdesc, date_format(event_start, '%l:%i %p') as fmt_date, date_format(event_end, '%l:%i %p') as fmt_end FROM calendar_events WHERE month(event_start) = '".$safe_m."' AND dayofmonth(event_start) = '".$safe_d."' AND year(event_start) = '".$safe_y."' AND userId = '".$user."' ORDER BY event_start";
+  // Handle AJAX update request
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
+    $event_id = mysqli_real_escape_string($mysqli, $_POST['event_id']);
+    $event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
+    $event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
+    $event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
+    $event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
+    $event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
+    $event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
+    
+    $event_date = sprintf("%04d-%02d-%02d %02d:%02d:00", $_POST['y'], $_POST['m'], $_POST['d'], $event_time_hh, $event_time_mm);
+    $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00", $_POST['y'], $_POST['m'], $_POST['d'], $event_end_hh, $event_end_mm);
+    
+    $update_sql = "UPDATE calendar_events SET event_title = '$event_title', event_shortdesc = '$event_shortdesc', 
+                   event_start = '$event_date', event_end = '$event_end' WHERE id = '$event_id' AND userId = '$user'";
+    $update_res = mysqli_query($mysqli, $update_sql);
+    if ($update_res) {
+      echo json_encode(['success' => true]);
+    } else {
+      echo json_encode(['success' => false, 'error' => mysqli_error($mysqli)]);
+    }
+    exit;
+  }
+
+  // Handle AJAX add request
+  if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
+    $safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
+    $safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
+    $safe_y = mysqli_real_escape_string($mysqli, $_POST['y']);
+    $safe_event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
+    $safe_event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
+    $safe_event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
+    $safe_event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
+    $safe_event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
+    $safe_event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
+
+    $event_date = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_time_hh, $safe_event_time_mm);
+    $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_end_hh, $safe_event_end_mm);
+
+    $insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start, event_end) 
+                     VALUES ('$user', '$safe_event_title', '$safe_event_shortdesc', '$event_date', '$event_end')";
+    $insEvent_res = mysqli_query($mysqli, $insEvent_sql);
+    
+    if ($insEvent_res) {
+      $event_id = mysqli_insert_id($mysqli);
+      
+      // Handle reminders
+      if (isset($_POST['reminders']) && is_array($_POST['reminders'])) {
+        foreach ($_POST['reminders'] as $reminder) {
+          $safe_reminder = mysqli_real_escape_string($mysqli, $reminder);
+          $insReminder_sql = "INSERT INTO event_reminders (event_id, reminder_time) VALUES ('$event_id', '$safe_reminder')";
+          mysqli_query($mysqli, $insReminder_sql);
+        }
+      }
+      
+      echo json_encode(['success' => true]);
+    } else {
+      echo json_encode(['success' => false, 'error' => mysqli_error($mysqli)]);
+    }
+    exit;
+  }
+
+  // Get events for this day
+  $safe_m = mysqli_real_escape_string($mysqli, $_GET['m']);
+  $safe_d = mysqli_real_escape_string($mysqli, $_GET['d']);
+  $safe_y = mysqli_real_escape_string($mysqli, $_GET['y']);
+
+  $getEvent_sql = "SELECT ce.*, GROUP_CONCAT(er.reminder_time) as reminders 
+                   FROM calendar_events ce 
+                   LEFT JOIN event_reminders er ON ce.id = er.event_id
+                   WHERE month(event_start) = '$safe_m' 
+                   AND dayofmonth(event_start) = '$safe_d' 
+                   AND year(event_start) = '$safe_y' 
+                   AND userId = '$user' 
+                   GROUP BY ce.id
+                   ORDER BY event_start";
+  
   $getEvent_res = mysqli_query($mysqli, $getEvent_sql) or die(mysqli_error($mysqli));
 
   if (mysqli_num_rows($getEvent_res) > 0) {
-	$event_txt = "<ul>";
-	while ($ev = @mysqli_fetch_array($getEvent_res)) {
-		$event_title = stripslashes($ev['event_title']);
-		$event_shortdesc = stripslashes($ev['event_shortdesc']);
-		$fmt_date = $ev['fmt_date'];
-        $fmt_end = $ev['fmt_end'];
-
-		$event_txt .= "<li><strong>".$fmt_date."-".$fmt_end."</strong>: ".$event_title."<br>".$event_shortdesc."</li>";
-	}
-	$event_txt .= "</ul>";
-	mysqli_free_result($getEvent_res);
-  } else {
-	$event_txt = "";
+    echo "<div id='events-list'>";
+    while ($ev = mysqli_fetch_array($getEvent_res)) {
+      $event_id = $ev['id'];
+      $event_title = htmlspecialchars(stripslashes($ev['event_title']));
+      $event_shortdesc = htmlspecialchars(stripslashes($ev['event_shortdesc']));
+      $start_time = date('H:i', strtotime($ev['event_start']));
+      $end_time = date('H:i', strtotime($ev['event_end']));
+      $reminders = $ev['reminders'] ? explode(',', $ev['reminders']) : [];
+      
+      echo "<div class='event-item' data-id='$event_id'>
+              <div class='event-display'>
+                <strong>$start_time-$end_time</strong>: $event_title<br>$event_shortdesc
+                <div class='event-actions'>
+                  <button onclick='editEvent(this)'>Edit</button>
+                  <button onclick='deleteEvent($event_id)'>Delete</button>
+                </div>
+              </div>
+              <form class='edit-form' style='display:none;'>
+                <input type='text' name='edit_title' value='$event_title'>
+                <input type='text' name='edit_desc' value='$event_shortdesc'>
+                <input type='time' name='edit_start' value='$start_time'>
+                <input type='time' name='edit_end' value='$end_time'>
+                <button type='button' onclick='updateEvent($event_id, this.form)'>Save</button>
+                <button type='button' onclick='cancelEdit(this)'>Cancel</button>
+              </form>
+            </div>";
+    }
+    echo "</div>";
   }
-
-  // close connection to MySQL
   mysqli_close($mysqli);
-
-  if ($event_txt != "") {
-	echo "<p><strong>Today's Events:</strong></p>
-	$event_txt
-	<hr>";
-  }
-
-  // show form for adding an event
-  echo <<<END_OF_TEXT
-<form method="post" action="event.php">
-<p><strong>Would you like to add an event?</strong><br>
-Complete the form below and press the submit button to add the event and refresh this window.</p>
-
-<p><label for="event_title">Event Title:</label><br>
-<input type="text" id="event_title" name="event_title" size="25" maxlength="25"></p>
-
-<p><label for="event_shortdesc">Event Description:</label><br>
-<input type="text" id="event_shortdesc" name="event_shortdesc" size="25" maxlength="255"></p>
-
-<fieldset>
-<legend>Starting Time (hh:mm):</legend>
-<select name="event_time_hh">
-END_OF_TEXT;
-
-  for ($x=1; $x <= 24; $x++) {
-  	echo "<option value=\"$x\">$x</option>";
-  }
-
-  echo <<<END_OF_TEXT
-</select> :
-<select name="event_time_mm">
-<option value="00">00</option>
-<option value="15">15</option>
-<option value="30">30</option>
-<option value="45">45</option>
-</select>
-</fieldset>
-<fieldset>
-<legend>Ending Time (hh:mm):</legend>
-<select name="event_end_hh">
-END_OF_TEXT;
-
-  for ($x=1; $x <= 24; $x++) {
-  	echo "<option value=\"$x\">$x</option>";
-  }
-
-  echo <<<END_OF_TEXT
-</select> :
-<select name="event_end_mm">
-<option value="00">00</option>
-<option value="15">15</option>
-<option value="30">30</option>
-<option value="45">45</option>
-</select>
-</fieldset>
-<input type="hidden" name="m" value="$safe_m">
-<input type="hidden" name="d" value="$safe_d">
-<input type="hidden" name="y" value="$safe_y">
-  
-<button type="submit" name="submit" value="submit">Add Event</button>
-</form>
-END_OF_TEXT;
   ?>
+
+  <form id="addEventForm">
+    <p><strong>Add New Event</strong></p>
+    <p><label for="event_title">Event Title:</label><br>
+    <input type="text" id="event_title" name="event_title" size="25" maxlength="25"></p>
+
+    <p><label for="event_shortdesc">Event Description:</label><br>
+    <input type="text" id="event_shortdesc" name="event_shortdesc" size="25" maxlength="255"></p>
+
+    <fieldset>
+      <legend>Starting Time (hh:mm):</legend>
+      <select name="event_time_hh">
+        <?php for ($x=1; $x <= 24; $x++) echo "<option value='$x'>$x</option>"; ?>
+      </select> :
+      <select name="event_time_mm">
+        <option value="00">00</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ending Time (hh:mm):</legend>
+      <select name="event_end_hh">
+        <?php for ($x=1; $x <= 24; $x++) echo "<option value='$x'>$x</option>"; ?>
+      </select> :
+      <select name="event_end_mm">
+        <option value="00">00</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Reminders:</legend>
+      <input type="checkbox" name="reminders[]" value="1_DAY"> 1 Day Before<br>
+      <input type="checkbox" name="reminders[]" value="2_DAY"> 2 Days Before<br>
+      <input type="checkbox" name="reminders[]" value="3_DAY"> 3 Days Before<br>
+      <input type="checkbox" name="reminders[]" value="1_MIN"> 1 Minute Before
+    </fieldset>
+
+    <input type="hidden" name="m" value="<?php echo $safe_m; ?>">
+    <input type="hidden" name="d" value="<?php echo $safe_d; ?>">
+    <input type="hidden" name="y" value="<?php echo $safe_y; ?>">
+    
+    <button type="submit">Add Event</button>
+  </form>
+
+  <script>
+    // Add event handler
+    $('#addEventForm').on('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      formData.append('action', 'add');
+      
+      fetch('event.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload(); // Temporary solution - will be replaced with AJAX update
+        } else {
+          alert('Error adding event: ' + data.error);
+        }
+      });
+    });
+
+    // Delete event handler
+    function deleteEvent(eventId) {
+      if (confirm('Are you sure you want to delete this event?')) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('event_id', eventId);
+        
+        fetch('event.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload(); // Temporary solution - will be replaced with AJAX update
+          } else {
+            alert('Error deleting event: ' + data.error);
+          }
+        });
+      }
+    }
+
+    // Edit event handlers
+    function editEvent(button) {
+      const eventItem = button.closest('.event-item');
+      eventItem.querySelector('.event-display').style.display = 'none';
+      eventItem.querySelector('.edit-form').style.display = 'block';
+    }
+
+    function cancelEdit(button) {
+      const eventItem = button.closest('.event-item');
+      eventItem.querySelector('.event-display').style.display = 'block';
+      eventItem.querySelector('.edit-form').style.display = 'none';
+    }
+
+    function updateEvent(eventId, form) {
+      const formData = new FormData(form);
+      formData.append('action', 'update');
+      formData.append('event_id', eventId);
+      
+      fetch('event.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload(); // Temporary solution - will be replaced with AJAX update
+        } else {
+          alert('Error updating event: ' + data.error);
+        }
+      });
+    }
+
+    // Check for reminders
+    function checkReminders() {
+      fetch('check_reminders.php')
+        .then(response => response.json())
+        .then(data => {
+          if (data.reminders && data.reminders.length > 0) {
+            data.reminders.forEach(reminder => {
+              alert(`Reminder: ${reminder.event_title} starts ${reminder.reminder_type}`);
+            });
+          }
+        });
+    }
+
+    // Check reminders every minute
+    setInterval(checkReminders, 60000);
+    checkReminders(); // Check immediately when page loads
+  </script>
 </body>
 </html>
