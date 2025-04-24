@@ -71,6 +71,10 @@
 
   // Handle AJAX add request
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
+    // Debug log
+    error_log("Received POST request for adding event");
+    error_log("POST data: " . print_r($_POST, true));
+
     $safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
     $safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
     $safe_y = mysqli_real_escape_string($mysqli, $_POST['y']);
@@ -84,24 +88,40 @@
     $event_date = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_time_hh, $safe_event_time_mm);
     $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_end_hh, $safe_event_end_mm);
 
+    // Debug log
+    error_log("Event date: " . $event_date);
+    error_log("Event end: " . $event_end);
+
     $insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start, event_end) 
                      VALUES ('$user', '$safe_event_title', '$safe_event_shortdesc', '$event_date', '$event_end')";
+    
+    // Debug log
+    error_log("SQL Query: " . $insEvent_sql);
+    
     $insEvent_res = mysqli_query($mysqli, $insEvent_sql);
     
     if ($insEvent_res) {
       $event_id = mysqli_insert_id($mysqli);
+      error_log("Successfully inserted event with ID: " . $event_id);
       
       // Handle reminders
       if (isset($_POST['reminders']) && is_array($_POST['reminders'])) {
         foreach ($_POST['reminders'] as $reminder) {
           $safe_reminder = mysqli_real_escape_string($mysqli, $reminder);
           $insReminder_sql = "INSERT INTO event_reminders (event_id, reminder_time) VALUES ('$event_id', '$safe_reminder')";
-          mysqli_query($mysqli, $insReminder_sql);
+          error_log("Reminder SQL: " . $insReminder_sql);
+          $reminder_res = mysqli_query($mysqli, $insReminder_sql);
+          if (!$reminder_res) {
+            error_log("Error inserting reminder: " . mysqli_error($mysqli));
+          }
         }
+      } else {
+        error_log("No reminders selected");
       }
       
       echo json_encode(['success' => true]);
     } else {
+      error_log("Error inserting event: " . mysqli_error($mysqli));
       echo json_encode(['success' => false, 'error' => mysqli_error($mysqli)]);
     }
     exit;
@@ -157,7 +177,7 @@
   mysqli_close($mysqli);
   ?>
 
-  <form id="addEventForm">
+  <form id="addEventForm" method="POST">
     <p><strong>Add New Event</strong></p>
     <p><label for="event_title">Event Title:</label><br>
     <input type="text" id="event_title" name="event_title" size="25" maxlength="25"></p>

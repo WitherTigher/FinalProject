@@ -204,14 +204,14 @@ $firstDayArray = getdate($start);
       keeper.innerHTML = data;
       
       // Add event handlers to any forms in the sidebar
-      const form = keeper.querySelector("form");
-      if (form) {
+      const forms = keeper.querySelectorAll("form");
+      forms.forEach(form => {
         form.addEventListener("submit", function(e) {
           e.preventDefault();
           const formData = new FormData(this);
           
-          fetch(this.action, {
-            method: this.method || 'POST',
+          fetch(this.action || window.location.href, {
+            method: 'POST',
             body: formData
           })
           .then(response => response.text())
@@ -227,7 +227,7 @@ $firstDayArray = getdate($start);
             alert('Error processing your request. Please try again.');
           });
         });
-      }
+      });
     })
     .catch(error => {
       console.error('Error:', error);
