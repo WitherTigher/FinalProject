@@ -208,18 +208,31 @@ $firstDayArray = getdate($start);
       forms.forEach(form => {
         form.addEventListener("submit", function(e) {
           e.preventDefault();
-          const formData = new FormData(this);
+          console.log('Form submitted');
           
-          fetch(this.action || window.location.href, {
+          const formData = new FormData(this);
+          formData.append('action', 'add'); // Add the action parameter
+          
+          console.log('Form data:', Object.fromEntries(formData));
+          
+          fetch('event.php', {
             method: 'POST',
             body: formData
           })
           .then(response => response.text())
           .then(data => {
-            keeper.innerHTML = data;
-            // If this was a successful event addition, refresh the main calendar
-            if (data.includes('success')) {
-              window.location.reload();
+            console.log('Response:', data);
+            try {
+              const jsonData = JSON.parse(data);
+              if (jsonData.success) {
+                alert('Event added successfully!');
+                window.location.reload();
+              } else {
+                alert('Error adding event: ' + (jsonData.error || 'Unknown error'));
+              }
+            } catch (e) {
+              console.error('Error parsing response:', e);
+              keeper.innerHTML = data;
             }
           })
           .catch(error => {
