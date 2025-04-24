@@ -71,58 +71,107 @@
 
   // Handle AJAX add request
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
+    // Enable error reporting
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    
     // Debug log
-    error_log("Received POST request for adding event");
+    error_log("=== START OF EVENT ADDITION ===");
     error_log("POST data: " . print_r($_POST, true));
+    error_log("Session user ID: " . $user);
 
-    $safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
-    $safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
-    $safe_y = mysqli_real_escape_string($mysqli, $_POST['y']);
-    $safe_event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
-    $safe_event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
-    $safe_event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
-    $safe_event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
-    $safe_event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
-    $safe_event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
-
-    $event_date = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_time_hh, $safe_event_time_mm);
-    $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_end_hh, $safe_event_end_mm);
-
-    // Debug log
-    error_log("Event date: " . $event_date);
-    error_log("Event end: " . $event_end);
-
-    $insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start, event_end) 
-                     VALUES ('$user', '$safe_event_title', '$safe_event_shortdesc', '$event_date', '$event_end')";
-    
-    // Debug log
-    error_log("SQL Query: " . $insEvent_sql);
-    
-    $insEvent_res = mysqli_query($mysqli, $insEvent_sql);
-    
-    if ($insEvent_res) {
-      $event_id = mysqli_insert_id($mysqli);
-      error_log("Successfully inserted event with ID: " . $event_id);
-      
-      // Handle reminders
-      if (isset($_POST['reminders']) && is_array($_POST['reminders'])) {
-        foreach ($_POST['reminders'] as $reminder) {
-          $safe_reminder = mysqli_real_escape_string($mysqli, $reminder);
-          $insReminder_sql = "INSERT INTO event_reminders (event_id, reminder_time) VALUES ('$event_id', '$safe_reminder')";
-          error_log("Reminder SQL: " . $insReminder_sql);
-          $reminder_res = mysqli_query($mysqli, $insReminder_sql);
-          if (!$reminder_res) {
-            error_log("Error inserting reminder: " . mysqli_error($mysqli));
-          }
+    // Validate required fields
+    $required_fields = ['m', 'd', 'y', 'event_title', 'event_time_hh', 'event_time_mm', 'event_end_hh', 'event_end_mm'];
+    $missing_fields = [];
+    foreach ($required_fields as $field) {
+        if (!isset($_POST[$field]) || $_POST[$field] === '') {
+            $missing_fields[] = $field;
         }
-      } else {
-        error_log("No reminders selected");
-      }
-      
-      echo json_encode(['success' => true]);
-    } else {
-      error_log("Error inserting event: " . mysqli_error($mysqli));
-      echo json_encode(['success' => false, 'error' => mysqli_error($mysqli)]);
+    }
+    
+    if (!empty($missing_fields)) {
+        error_log("Missing required fields: " . implode(', ', $missing_fields));
+        echo json_encode(['success' => false, 'error' => 'Missing required fields: ' . implode(', ', $missing_fields)]);
+        exit;
+    }
+
+    try {
+        $safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
+        $safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
+        $safe_y = mysqli_real_escape_string($mysqli, $_POST['y']);
+        $safe_event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
+        $safe_event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc'] ?? '');
+        $safe_event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
+        $safe_event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
+        $safe_event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
+        $safe_event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
+
+        $event_date = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_time_hh, $safe_event_time_mm);
+        $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00", $safe_y, $safe_m, $safe_d, $safe_event_end_hh, $safe_event_end_mm);
+
+        error_log("Formatted dates - Start: $event_date, End: $event_end");
+
+        $insEvent_sql = "INSERT INTO calendar_events (userId, event_title, event_shortdesc, event_start, event_end) 
+                         VALUES (?, ?, ?, ?, ?)";
+        
+        $stmt = mysqli_prepare($mysqli, $insEvent_sql);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . mysqli_error($mysqli));
+        }
+
+        mysqli_stmt_bind_param($stmt, "issss", 
+            $user,
+            $safe_event_title,
+            $safe_event_shortdesc,
+            $event_date,
+            $event_end
+        );
+
+        error_log("Executing query with parameters: " . print_r([
+            'userId' => $user,
+            'title' => $safe_event_title,
+            'desc' => $safe_event_shortdesc,
+            'start' => $event_date,
+            'end' => $event_end
+        ], true));
+
+        if (!mysqli_stmt_execute($stmt)) {
+            throw new Exception("Execute failed: " . mysqli_stmt_error($stmt));
+        }
+
+        $event_id = mysqli_insert_id($mysqli);
+        error_log("Successfully inserted event with ID: " . $event_id);
+
+        // Handle reminders
+        if (isset($_POST['reminders']) && is_array($_POST['reminders'])) {
+            foreach ($_POST['reminders'] as $reminder) {
+                $safe_reminder = mysqli_real_escape_string($mysqli, $reminder);
+                error_log("Processing reminder: " . $safe_reminder);
+
+                $insReminder_sql = "INSERT INTO event_reminders (event_id, reminder_time) VALUES (?, ?)";
+                $stmt = mysqli_prepare($mysqli, $insReminder_sql);
+                if (!$stmt) {
+                    error_log("Failed to prepare reminder statement: " . mysqli_error($mysqli));
+                    continue;
+                }
+
+                mysqli_stmt_bind_param($stmt, "is", $event_id, $safe_reminder);
+                if (!mysqli_stmt_execute($stmt)) {
+                    error_log("Failed to insert reminder: " . mysqli_stmt_error($stmt));
+                } else {
+                    error_log("Successfully added reminder");
+                }
+            }
+        } else {
+            error_log("No reminders to process");
+        }
+
+        error_log("=== END OF EVENT ADDITION ===");
+        echo json_encode(['success' => true, 'event_id' => $event_id]);
+
+    } catch (Exception $e) {
+        error_log("Error in event addition: " . $e->getMessage());
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
     }
     exit;
   }
