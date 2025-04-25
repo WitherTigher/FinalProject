@@ -347,22 +347,31 @@ function updateEvent(eventId, form) {
     formData.append('action', 'update');
     formData.append('event_id', eventId);
     
+    // Convert time inputs to proper format
+    const startTime = form.querySelector('[name="start_time"]').value;
+    const endTime = form.querySelector('[name="end_time"]').value;
+    
+    if (!startTime || !endTime) {
+      showNotification('Please fill in all required fields', 'error');
+      return;
+    }
+    
     fetch('event.php', {
-        method: 'POST',
-        body: formData
+      method: 'POST',
+      body: formData
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            showNotification('Event updated successfully', 'success');
-            window.location.reload();
-        } else {
-            showNotification('Error updating event: ' + (data.error || 'Unknown error'), 'error');
-        }
+      if (data.success) {
+        showNotification('Event updated successfully', 'success');
+        window.location.reload();
+      } else {
+        showNotification('Error updating event: ' + (data.error || 'Unknown error'), 'error');
+      }
     })
     .catch(error => {
-        console.error('Error:', error);
-        showNotification('Error updating event. Please try again.', 'error');
+      console.error('Error:', error);
+      showNotification('Error updating event. Please try again.', 'error');
     });
 }
 

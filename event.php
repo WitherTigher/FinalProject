@@ -42,21 +42,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
 
         case 'update':
-            $event_id = mysqli_real_escape_string($mysqli, $_POST['event_id']);
-            $event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
-            $event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
-            $event_time_hh = mysqli_real_escape_string($mysqli, $_POST['event_time_hh']);
-            $event_time_mm = mysqli_real_escape_string($mysqli, $_POST['event_time_mm']);
-            $event_end_hh = mysqli_real_escape_string($mysqli, $_POST['event_end_hh']);
-            $event_end_mm = mysqli_real_escape_string($mysqli, $_POST['event_end_mm']);
-            
-            $event_date = sprintf("%04d-%02d-%02d %02d:%02d:00", $_POST['y'], $_POST['m'], $_POST['d'], $event_time_hh, $event_time_mm);
-            $event_end = sprintf("%04d-%02d-%02d %02d:%02d:00", $_POST['y'], $_POST['m'], $_POST['d'], $event_end_hh, $event_end_mm);
-            
-            $update_sql = "UPDATE calendar_events SET event_title = '$event_title', event_shortdesc = '$event_shortdesc', 
-                           event_start = '$event_date', event_end = '$event_end' WHERE id = '$event_id' AND userId = '$user'";
-            $update_res = mysqli_query($mysqli, $update_sql);
-            echo json_encode(['success' => $update_res ? true : false]);
+            try {
+                $event_id = mysqli_real_escape_string($mysqli, $_POST['event_id']);
+                $event_title = mysqli_real_escape_string($mysqli, $_POST['event_title']);
+                $event_shortdesc = mysqli_real_escape_string($mysqli, $_POST['event_shortdesc']);
+                
+                // Parse the time inputs
+                $start_time = strtotime($_POST['start_time']);
+                $end_time = strtotime($_POST['end_time']);
+                
+                if ($start_time === false || $end_time === false) {
+                    throw new Exception("Invalid time format");
+                }
+                
+                $event_date = date('Y-m-d', strtotime("{$_POST['y']}-{$_POST['m']}-{$_POST['d']}")) . ' ' . date('H:i:s', $start_time);
+                $event_end = date('Y-m-d', strtotime("{$_POST['y']}-{$_POST['m']}-{$_POST['d']}")) . ' ' . date('H:i:s', $end_time);
+                
+                $update_sql = "UPDATE calendar_events 
+                              SET event_title = ?, 
+                                  event_shortdesc = ?, 
+                                  event_start = ?, 
+                                  event_end = ? 
+                              WHERE id = ? AND userId = ?";
+                
+                $stmt = mysqli_prepare($mysqli, $update_sql);
+                if (!$stmt) {
+                    throw new Exception("Prepare failed: " . mysqli_error($mysqli));
+                }
+                
+                mysqli_stmt_bind_param($stmt, "ssssii", 
+                    $event_title,
+                    $event_shortdesc,
+                    $event_date,
+                    $event_end,
+                    $event_id,
+                    $user
+                );
+                
+                if (!mysqli_stmt_execute($stmt)) {
+                    throw new Exception("Execute failed: " . mysqli_stmt_error($stmt));
+                }
+                
+                echo json_encode(['success' => true]);
+                
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
             break;
 
         case 'add':
@@ -206,10 +237,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
               </div>
               <form class='edit-form' style='display:none;'>
-                <input type='text' name='edit_title' value='$event_title'>
-                <input type='text' name='edit_desc' value='$event_shortdesc'>
-                <input type='time' name='edit_start' value='$start_time'>
-                <input type='time' name='edit_end' value='$end_time'>
+                <input type='text' name='event_title' value='$event_title' required>
+                <textarea name='event_shortdesc'>$event_shortdesc</textarea>
+                <input type='hidden' name='m' value='$safe_m'>
+                <input type='hidden' name='d' value='$safe_d'>
+                <input type='hidden' name='y' value='$safe_y'>
+                <input type='hidden' name='event_time_hh' value='".date('G', strtotime($ev['event_start']))."'>
+                <input type='hidden' name='event_time_mm' value='".date('i', strtotime($ev['event_start']))."'>
+                <input type='hidden' name='event_end_hh' value='".date('G', strtotime($ev['event_end']))."'>
+                <input type='hidden' name='event_end_mm' value='".date('i', strtotime($ev['event_end']))."'>
+                <div>
+                  <label>Start Time:</label>
+                  <input type='time' name='start_time' value='$start_time' required>
+                </div>
+                <div>
+                  <label>End Time:</label>
+                  <input type='time' name='end_time' value='$end_time' required>
+                </div>
                 <button type='button' onclick='updateEvent($event_id, this.form)'>Save</button>
                 <button type='button' onclick='cancelEdit(this)'>Cancel</button>
               </form>
