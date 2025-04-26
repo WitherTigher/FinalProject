@@ -183,23 +183,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <style>
     .event-item { 
       margin: 10px 0;
-      padding: 10px;
+      padding: 15px;
       border: 1px solid #ddd;
+      border-radius: 8px;
       position: relative;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .event-actions {
       position: absolute;
-      right: 10px;
-      top: 10px;
+      right: 15px;
+      top: 15px;
+    }
+    .event-actions button {
+      padding: 8px 15px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .event-actions button:first-child {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .event-actions button:last-child {
+      background-color: #f44336;
+      color: white;
     }
     .edit-form {
       display: none;
+      padding: 15px;
+    }
+    .edit-form input[type="text"],
+    .edit-form textarea,
+    .edit-form input[type="time"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .edit-form textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .edit-form label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    .edit-form .form-buttons {
+      margin-top: 15px;
+      text-align: right;
+    }
+    .edit-form .form-buttons button {
+      padding: 8px 20px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .edit-form .form-buttons button[onclick*="updateEvent"] {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .edit-form .form-buttons button[onclick*="cancelEdit"] {
+      background-color: #777;
+      color: white;
     }
     #addEventForm {
       display: block;
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
     }
     .editing #addEventForm {
-      display: none;
+      display: none !important;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    body {
+      background-color: #f5f5f5;
+      padding: 20px;
+      font-family: Arial, sans-serif;
     }
   </style>
 </head>
@@ -243,9 +319,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <button onclick='deleteEvent($event_id)'>Delete</button>
                 </div>
               </div>
-              <form class='edit-form' style='display:none;'>
-                <input type='text' name='event_title' value='$event_title' required>
-                <textarea name='event_shortdesc'>$event_shortdesc</textarea>
+              <form class='edit-form'>
+                <label for="event_title_${event_id}">Event Title:</label>
+                <input type='text' id="event_title_${event_id}" name='event_title' value='$event_title' required>
+                
+                <label for="event_desc_${event_id}">Event Description:</label>
+                <textarea id="event_desc_${event_id}" name='event_shortdesc'>$event_shortdesc</textarea>
+                
                 <input type='hidden' name='m' value='$safe_m'>
                 <input type='hidden' name='d' value='$safe_d'>
                 <input type='hidden' name='y' value='$safe_y'>
@@ -253,16 +333,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type='hidden' name='event_time_mm' value='".date('i', strtotime($ev['event_start']))."'>
                 <input type='hidden' name='event_end_hh' value='".date('G', strtotime($ev['event_end']))."'>
                 <input type='hidden' name='event_end_mm' value='".date('i', strtotime($ev['event_end']))."'>
+                
                 <div>
-                  <label>Start Time:</label>
-                  <input type='time' name='start_time' value='$start_time' required>
+                  <label for="start_time_${event_id}">Start Time:</label>
+                  <input type='time' id="start_time_${event_id}" name='start_time' value='$start_time' required>
                 </div>
+                
                 <div>
-                  <label>End Time:</label>
-                  <input type='time' name='end_time' value='$end_time' required>
+                  <label for="end_time_${event_id}">End Time:</label>
+                  <input type='time' id="end_time_${event_id}" name='end_time' value='$end_time' required>
                 </div>
-                <button type='button' onclick='updateEvent($event_id, this.form)'>Save</button>
-                <button type='button' onclick='cancelEdit(this)'>Cancel</button>
+                
+                <div class="form-buttons">
+                  <button type='button' onclick='cancelEdit(this)'>Cancel</button>
+                  <button type='button' onclick='updateEvent($event_id, this.form)'>Save Changes</button>
+                </div>
               </form>
             </div>";
     }
