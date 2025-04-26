@@ -184,25 +184,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .event-item { 
       margin: 10px 0;
       padding: 15px;
+      padding-right: 160px; /* Add space for buttons */
       border: 1px solid #ddd;
       border-radius: 8px;
       position: relative;
       background-color: #fff;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
+    .event-display {
+      word-wrap: break-word;
+      padding-right: 10px;
+    }
     .event-actions {
       position: absolute;
       right: 15px;
-      top: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 8px;
     }
     .event-actions button {
       padding: 8px 15px;
-      margin-left: 10px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
       transition: background-color 0.3s;
+      white-space: nowrap;
+      min-width: 70px;
     }
     .event-actions button:first-child {
       background-color: #4CAF50;
