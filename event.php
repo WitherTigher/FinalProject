@@ -320,11 +320,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
               </div>
               <form class='edit-form'>
-                <label for="event_title_${event_id}">Event Title:</label>
-                <input type='text' id="event_title_${event_id}" name='event_title' value='$event_title' required>
+                <label for='event_title_".$event_id."'>Event Title:</label>
+                <input type='text' id='event_title_".$event_id."' name='event_title' value='$event_title' required>
                 
-                <label for="event_desc_${event_id}">Event Description:</label>
-                <textarea id="event_desc_${event_id}" name='event_shortdesc'>$event_shortdesc</textarea>
+                <label for='event_desc_".$event_id."'>Event Description:</label>
+                <textarea id='event_desc_".$event_id."' name='event_shortdesc'>$event_shortdesc</textarea>
                 
                 <input type='hidden' name='m' value='$safe_m'>
                 <input type='hidden' name='d' value='$safe_d'>
@@ -335,16 +335,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type='hidden' name='event_end_mm' value='".date('i', strtotime($ev['event_end']))."'>
                 
                 <div>
-                  <label for="start_time_${event_id}">Start Time:</label>
-                  <input type='time' id="start_time_${event_id}" name='start_time' value='$start_time' required>
+                  <label for='start_time_".$event_id."'>Start Time:</label>
+                  <input type='time' id='start_time_".$event_id."' name='start_time' value='$start_time' required>
                 </div>
                 
                 <div>
-                  <label for="end_time_${event_id}">End Time:</label>
-                  <input type='time' id="end_time_${event_id}" name='end_time' value='$end_time' required>
+                  <label for='end_time_".$event_id."'>End Time:</label>
+                  <input type='time' id='end_time_".$event_id."' name='end_time' value='$end_time' required>
                 </div>
                 
-                <div class="form-buttons">
+                <div class='form-buttons'>
                   <button type='button' onclick='cancelEdit(this)'>Cancel</button>
                   <button type='button' onclick='updateEvent($event_id, this.form)'>Save Changes</button>
                 </div>
