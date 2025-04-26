@@ -27,6 +27,7 @@ $firstDayArray = getdate($start);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo "Calendar: ".$firstDayArray['month']." ".$firstDayArray['year']; ?></title>
     
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- CSS Files -->
     <link rel="stylesheet" href="showcalendar_withevent.css" type="text/css">
     <link rel="stylesheet" href="sidebar.css" type="text/css">
@@ -55,6 +56,9 @@ $firstDayArray = getdate($start);
 
     .error {
         background-color: #f44336;
+    }
+    body, table, th, td, form, select, button, .sidenav, .sidenav a, .sidenav h1, .user-info, .logout-link, .main-content, h1 {
+        font-family: 'Heebo', sans-serif;
     }
     </style>
 </head>
