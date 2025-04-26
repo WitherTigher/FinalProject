@@ -1,6 +1,6 @@
 /* Global Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Heebo', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -127,4 +127,4 @@ td {
     margin: 20px auto;
     max-width: 800px;
     padding: 0 20px;
-} 
+}
