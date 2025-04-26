@@ -195,10 +195,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .edit-form {
       display: none;
     }
+    #addEventForm {
+      display: block;
+    }
+    .editing #addEventForm {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Show/Add Events</h1>
+  <div id="events-container">
   <?php
 
   // Get events for this day
@@ -384,12 +391,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const eventItem = button.closest('.event-item');
       eventItem.querySelector('.event-display').style.display = 'none';
       eventItem.querySelector('.edit-form').style.display = 'block';
+      document.getElementById('events-container').classList.add('editing');
     }
 
     function cancelEdit(button) {
       const eventItem = button.closest('.event-item');
       eventItem.querySelector('.event-display').style.display = 'block';
       eventItem.querySelector('.edit-form').style.display = 'none';
+      document.getElementById('events-container').classList.remove('editing');
     }
 
     function updateEvent(eventId, form) {
