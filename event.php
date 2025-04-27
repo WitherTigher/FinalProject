@@ -12,7 +12,7 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 
-$mysqli = mysqli_connect("sql306.infinityfree.com", "if0_38810052", "GEEXEOxOg8Po", "if0_38810052_calendar");
+$mysqli = new mysqli("localhost", "root", "", "calendar");
 if (!$mysqli) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json');

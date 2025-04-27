@@ -46,7 +46,7 @@ try {
     }
 
     // Connect to MySQL
-    $mysqli = mysqli_connect("sql306.infinityfree.com", "if0_38810052", "GEEXEOxOg8Po", "if0_38810052_calendar");
+    $mysqli = new mysqli("localhost", "root", "", "calendar");
 
     if (!$mysqli) {
         throw new Exception("Database connection failed: " . mysqli_connect_error());

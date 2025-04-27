@@ -180,7 +180,7 @@ $firstDayArray = getdate($start);
 	    echo "<td>&nbsp;</td>\n";
 	  } else {
 		 $event_title = "";
-        $mysqli = mysqli_connect("sql306.infinityfree.com", "if0_38810052", "GEEXEOxOg8Po", "if0_38810052_calendar");
+      $mysqli = new mysqli("localhost", "root", "", "calendar");
 		 $chkEvent_sql = "SELECT event_title FROM calendar_events WHERE
 						  month(event_start) = '".$month."' AND
 						  dayofmonth(event_start) = '".$dayArray['mday']."'
