@@ -9,54 +9,107 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-/* Global Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
+        /* Global Styles */
+        body {
+            font-family: 'Heebo', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
 
-/* Header Styling */
-h1 {
-    background-color: #14495d;
-    color: #ffffff;
-    padding: 20px;
-    text-align: center;
-    margin: 0;
-}
+        /* Header Styling */
+        h1 {
+            background-color: #14495d;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+            font-weight: 700;
+        }
 
-/* Container Styling */
-    #datePicker, #myCal {
-    margin: 20px auto;
-    max-width: 600px;
-}
+        h2 {
+            text-align: center;
+            color: #14495d;
+            margin: 20px 0;
+        }
 
-/* Table Styling */
-table {
-    border: 1px solid black;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    width: 100%;
-    background-color: #ffffff;
-}
+        .section {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-th {
-    border: 1px solid black;
-    padding: 6px;
-    font-weight: bold;
-    background: #ccc;
-}
+        .section h3 {
+            color: #14495d;
+            border-bottom: 2px solid #14495d;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
 
-td {
-    border: 1px solid black;
-    padding: 6px;
-    vertical-align: top;
-    width: 100px;
-}
+        .section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .section ul li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .section ul li:before {
+            content: "•";
+            color: #14495d;
+            position: absolute;
+            left: 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+            font-size: 0.9em;
+        }
+
+        .complete {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .feature-nav {
+            background: #14495d;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .feature-nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .feature-nav a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .feature-nav a.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .nested-list {
+            margin-left: 30px;
+            border-left: 2px solid #14495d;
+            padding-left: 20px;
+        }
     </style>
-    
 </head>
 <body>
 <div id="navbar"></div>
@@ -88,19 +141,78 @@ td {
     <div class="section">
         <h3>Front End Changes</h3>
         <ul>
-            <li>Week 1 (due April 08 2PM): Base app implemented, proposal presented</li>
-            <li>Week 3 (due April 22 2PM): Complete enhancements, demo to instructor</li>
-            <li>Week 4 (due April 27 EOD): Polish UI and prepare for class demo</li>
-            <li>Week 5 (due Final Exam): Give a polished demo of your team's app</li>
+            <li><strong>Week 1 (due April 08 2PM): Base app implemented, proposal presented</strong>
+                <ul class="nested-list">
+                    <li>Implemented the base app with a calendar <span class="status complete">Complete ✅</span>
+                        <p>Created essential files to run the site (showcalendar_withevent.php, navbar.html, footer.html, login.php, etc) and populated HTML skeleton</p>
+                    </li>
+                    <li>Implemented the proposal with a proposal page <span class="status complete">Complete ✅</span>
+                        <p>Populated all features, group members, contacts, etc into the pages and implemented CSS</p>
+                    </li>
+                    <li>Implemented the calendar with a calendar frame <span class="status complete">Complete ✅</span>
+                        <p>Added dates and months with highlighted days of the week, built out over past couple years. Enhanced original textbook framework with improved visual appeal and updated CSS</p>
+                    </li>
+                    <li>Created the logout and login page <span class="status complete">Complete ✅</span>
+                        <p>Implemented HTML for login, logout, and forget password functionality</p>
+                    </li>
+                    <li>Created the sidebar and navbar <span class="status complete">Complete ✅</span>
+                        <p>Developed HTML and CSS for sidebar and navbar components</p>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Week 2 (due April 15 2PM): Enhanced Functionality</strong>
+                <ul class="nested-list">
+                    <li>Made the calendar dynamic <span class="status complete">Complete ✅</span>
+                        <p>Implemented JavaScript functionality for dynamic calendar operations</p>
+                    </li>
+                    <li>Improved Sidebar Visuals <span class="status complete">Complete ✅</span>
+                        <p>Added sliding animations, matched color scheme, and integrated icons with page references</p>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Week 3 (due April 22 2PM): UI Enhancements</strong>
+                <ul class="nested-list">
+                    <li>Updated Typography <span class="status complete">Complete ✅</span>
+                        <p>Changed fonts across show_calendarwithevents.php, about.html, forgotpassword.html, and features.html</p>
+                    </li>
+                    <li>Added Animations <span class="status complete">Complete ✅</span>
+                        <p>Implemented sliding effects and moving sidebars</p>
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Week 4 (due April 27 EOD): Final Polish</strong>
+                <ul class="nested-list">
+                    <li>Presented final product <span class="status complete">Complete ✅</span></li>
+                </ul>
+            </li>
         </ul>
     </div>
     <div class="section">
         <h3>Back End Changes</h3>
         <ul>
-            <li>Week 1 (due April 08 2PM): Base app implemented, proposal presented</li>
-            <li>Week 3 (due April 22 2PM): Complete enhancements, demo to instructor</li>
-            <li>Week 4 (due April 27 EOD): Polish UI and prepare for class demo</li>
-            <li>Week 5 (due Final Exam): Give a polished demo of your team's app</li>
+            <li><strong>Week 1 (due April 08 2PM): Database Setup</strong>
+                <ul class="nested-list">
+                    <li>Set up database on XAMPP <span class="status complete">Complete ✅</span></li>
+                    <li>Created database for users, reminders, and events <span class="status complete">Complete ✅</span></li>
+                </ul>
+            </li>
+            <li><strong>Week 2 (due April 15 2PM): Database Migration</strong>
+                <ul class="nested-list">
+                    <li>Connected database from XAMPP to web host provider <span class="status complete">Complete ✅</span></li>
+                </ul>
+            </li>
+            <li><strong>Week 3 (due April 22 2PM): Feature Implementation</strong>
+                <ul class="nested-list">
+                    <li>Database Management <span class="status complete">Complete ✅</span></li>
+                    <li>Calendar Reminders <span class="status complete">Complete ✅</span></li>
+                    <li>Implemented Forgot Password Script <span class="status complete">Complete ✅</span></li>
+                </ul>
+            </li>
+            <li><strong>Week 4 (due April 27 EOD): Final Testing</strong>
+                <ul class="nested-list">
+                    <li>Error Checking and backend connections <span class="status complete">Complete ✅</span></li>
+                </ul>
+            </li>
         </ul>
     </div>
 </body>
