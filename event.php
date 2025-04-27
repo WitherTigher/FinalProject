@@ -12,7 +12,7 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 
-$mysqli = mysqli_connect("localhost", "root", "", "calendar");
+$mysqli = mysqli_connect("sql306.infinityfree.com", "if0_38810052", "GEEXEOxOg8Po", "if0_38810052_calendar");
 if (!$mysqli) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json');
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!empty($missing_fields)) {
                     throw new Exception('Missing required fields: ' . implode(', ', $missing_fields));
                 }
-
+                
                 $safe_m = mysqli_real_escape_string($mysqli, $_POST['m']);
                 $safe_d = mysqli_real_escape_string($mysqli, $_POST['d']);
                 $safe_y = mysqli_real_escape_string($mysqli, $_POST['y']);

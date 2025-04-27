@@ -6,7 +6,7 @@ if (!isset($_SESSION['userId'])) {
     exit;
 }
 
-$mysqli = mysqli_connect("localhost", "root", "", "calendar");
+$mysqli = mysqli_connect("sql306.infinityfree.com", "if0_38810052", "GEEXEOxOg8Po", "if0_38810052_calendar");
 if (!$mysqli) {
     echo json_encode(['error' => 'Database connection failed']);
     exit;

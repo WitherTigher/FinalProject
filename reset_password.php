@@ -13,7 +13,7 @@ if (empty($userId) || empty($answer) || empty($newPassword)) {
 }
 
 // Connect to database
-$mysqli = new mysqli("localhost", "root", "", "calendar");
+$mysqli = mysqli_connect("sql306.infinityfree.com", "if0_38810052", "GEEXEOxOg8Po", "if0_38810052_calendar");
 if ($mysqli->connect_error) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed']);
     exit;
